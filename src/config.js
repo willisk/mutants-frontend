@@ -1,18 +1,26 @@
 import { ethers } from 'ethers';
-const { abi } = require('./abi/WeirdAssFungis.json');
+const { abi: NFTAbi } = require('./abi/NFT.json');
+const { abi: SerumAbi } = require('./abi/Serum.json');
+const { abi: MutantsAbi } = require('./abi/Mutants.json');
 
-export const contractConfig = {
-  maxSupply: 100,
-  mintPrice: ethers.utils.parseEther('0.01'),
+export const nftContractConfig = {
+  maxSupply: 1000,
+  mintPrice: ethers.utils.parseEther('0.03'),
   purchaseLimit: 10,
 };
 
+// export const serumContractConfig = {
+//   maxSupply: 100,
+//   mintPrice: ethers.utils.parseEther('0.01'),
+//   purchaseLimit: 10,
+// };
+
 export const config = {
-  abi: abi,
-  address: '0x83DB0478eCFd19713521DBB589227cb1E7F00699',
+  NFTAbi: NFTAbi,
+  SerumAbi: SerumAbi,
+  MutantsAbi: MutantsAbi,
+  NFTAddress: '0xbd1FB312953544b5781601048f2088C4B02DDdDb',
+  // MutantAddress: "0x779C7d959dab9F0A96652C5c018d193B9E08303B",
+  // SerumAddress: "0x0c4497C76978E851Ae04Ccad0C2D4018606bB8D6",
   supportedChainIds: [80001],
 };
-
-export const contractABI = config.abi;
-export const contractAddress = config.address;
-export const supportedChainIds = config.supportedChainIds;

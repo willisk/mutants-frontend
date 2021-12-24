@@ -8,7 +8,9 @@ import { Box } from '@mui/system';
 import { getTransactionLink } from './ChainIds';
 import { ethers } from 'ethers';
 
-import { contractABI, contractAddress } from '../config';
+import { config } from '../config';
+
+const { NFTAbi, NFTAddress } = config;
 
 export const ContractContext = createContext({});
 
@@ -30,7 +32,7 @@ const parseTxError = (e) => {
 };
 
 const INITIAL_CONTRACT_STATE = {
-  address: contractAddress,
+  address: NFTAddress,
   owner: undefined,
   publicSaleActive: undefined,
   name: undefined,
@@ -46,7 +48,7 @@ const getContractState = async (contract) => {
   console.log('fetching contract state..');
 
   const owner = await contract.owner();
-  const publicSaleActive = await contract.isActive();
+  const publicSaleActive = await contract.publicSaleActive();
   const totalSupply = await contract.totalSupply();
   const items = await Promise.all(
     [...Array(totalSupply.toNumber())].map(async (_, i) => ({
@@ -98,12 +100,12 @@ export function ContractInterfaceProvider({ children }) {
   window.web3r = useWeb3React();
 
   const contract = useMemo(() => {
-    console.log('acc changed', library);
-    return new ethers.Contract(contractAddress, contractABI, library);
+    // console.log('acc changed', library);
+    return new ethers.Contract(NFTAddress, NFTAbi, library);
   }, [account]);
 
   const signContract = useMemo(() => {
-    return new ethers.Contract(contractAddress, contractABI, library?.getSigner());
+    return new ethers.Contract(NFTAddress, NFTAbi, library?.getSigner());
   }, [account]);
 
   const updateContractState = async () => {
@@ -124,14 +126,6 @@ export function ContractInterfaceProvider({ children }) {
   // console.log('contract', contract);
   window.contract = contract;
   window.signContract = signContract;
-
-  const handleError = (e) => {
-    setAlertState({
-      open: true,
-      message: e.message,
-      severity: 'error',
-    });
-  };
 
   const handleAlertClose = (event, reason) => {
     if (reason !== 'clickaway') setAlertState({ ...alertState, open: false });

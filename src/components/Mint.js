@@ -11,14 +11,15 @@ import { ethers, BigNumber } from 'ethers';
 
 import { SStack, STextField, STextFieldReadOnly, SDateTimePicker } from './defaults';
 
-import { contractConfig } from '../config';
+import { nftContractConfig } from '../config';
 import { useContract, useContractState } from '../lib/ContractConnector';
 import { useWeb3React } from '@web3-react/core';
 import useWindowSize from 'react-use/lib/useWindowSize';
 
 const BN = BigNumber.from;
 
-const { maxSupply, mintPrice, purchaseLimit } = contractConfig;
+console.log(nftContractConfig);
+const { maxSupply, mintPrice, purchaseLimit } = nftContractConfig;
 
 export function Mint() {
   const [confetti, setConfetti] = useState(false);

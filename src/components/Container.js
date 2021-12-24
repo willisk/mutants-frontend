@@ -57,7 +57,7 @@ function Container() {
             <Box>
               <Box className="header" display="flex" justifyContent="space-between" sx={{ boxShadow: 3 }}>
                 <Box marginBlock="auto" marginInline="1em">
-                  <Typography variant="h4">Weird Ass Fungi</Typography>
+                  <Typography variant="h4">Mutants</Typography>
                 </Box>
                 <Box marginBlock="auto">
                   <Tabs value={highlightedTab} indicatorColor="primary" onChange={(event, tab) => setActiveTab(tab)}>

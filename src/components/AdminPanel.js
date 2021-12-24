@@ -11,7 +11,9 @@ import { useWeb3React } from '@web3-react/core';
 import { useContract, useContractState, useTx } from '../lib/ContractConnector';
 import { formatEther, parseEther } from 'ethers/lib/utils';
 import { signGiveaway } from '../lib/utils';
-import { contractAddress } from '../config';
+import { config } from '../config';
+
+const { NFTAddress } = config;
 
 const initialContractInfo = {
   name: '',
@@ -130,7 +132,7 @@ function AdminPanel() {
                 endAdornment: (
                   <Button
                     onClick={() =>
-                      signGiveaway(signer, contractAddress, giveAway).then(setGiveAwaySignature).catch(handleTxError)
+                      signGiveaway(signer, NFTAddress, giveAway).then(setGiveAwaySignature).catch(handleTxError)
                     }
                     disabled={!signer}
                     variant="contained"
