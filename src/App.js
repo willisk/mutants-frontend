@@ -4,7 +4,7 @@ import { Fragment, useState } from 'react';
 import { ThemeProvider, createTheme, themeOptions } from '@mui/material/styles';
 
 import { ContractInterfaceProvider, UnsupportedChainIdBanner } from './lib/ContractConnector';
-import Container from './components/Container';
+import { Home } from './components/Home';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
@@ -35,7 +35,7 @@ function App() {
       <CssBaseline />
       <Web3ReactProvider getLibrary={getLibrary}>
         <ContractInterfaceProvider>
-          <Container />
+          <Home />
         </ContractInterfaceProvider>
       </Web3ReactProvider>
     </ThemeProvider>

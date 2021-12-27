@@ -7,20 +7,29 @@ export const nftContractConfig = {
   maxSupply: 1000,
   mintPrice: ethers.utils.parseEther('0.03'),
   purchaseLimit: 10,
+  mintPriceWL: ethers.utils.parseEther('0.03'),
+  purchaseLimitWL: 2,
 };
+
+export const mutantsContractConfig = {
+  maxSupply: 1000,
+  mintPrice: ethers.utils.parseEther('0.03'),
+  purchaseLimit: 10,
+};
+
+export const config = {
+  NFTAddress: '0x37783959966781eE419f7b038D357DF661778DEe',
+  MutantsAddress: '0x9131CF0FD40c266d94C8446a29B73256C6d50F87',
+  SerumAddress: '0x2524C7fE54976b6CA8C86D90D8a03912e4d9DeCB',
+  supportedChainIds: [80001],
+};
+
+export const NFTContract = new ethers.Contract(config.NFTAddress, NFTAbi);
+export const SerumContract = new ethers.Contract(config.SerumAddress, SerumAbi);
+export const MutantsContract = new ethers.Contract(config.MutantsAddress, MutantsAbi);
 
 // export const serumContractConfig = {
 //   maxSupply: 100,
 //   mintPrice: ethers.utils.parseEther('0.01'),
 //   purchaseLimit: 10,
 // };
-
-export const config = {
-  NFTAbi: NFTAbi,
-  SerumAbi: SerumAbi,
-  MutantsAbi: MutantsAbi,
-  NFTAddress: '0xbd1FB312953544b5781601048f2088C4B02DDdDb',
-  // MutantAddress: "0x779C7d959dab9F0A96652C5c018d193B9E08303B",
-  // SerumAddress: "0x0c4497C76978E851Ae04Ccad0C2D4018606bB8D6",
-  supportedChainIds: [80001],
-};

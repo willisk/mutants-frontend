@@ -8,9 +8,10 @@ import { Box } from '@mui/system';
 import { getTransactionLink } from './ChainIds';
 import { ethers } from 'ethers';
 
-import { config } from '../config';
+// import { config } from '../config';
+import { MutantsContract, NFTContract, SerumContract } from '../config';
 
-const { NFTAbi, NFTAddress } = config;
+// const { NFTAbi, NFTAddress, } = config;
 
 export const ContractContext = createContext({});
 
@@ -31,63 +32,7 @@ const parseTxError = (e) => {
   }
 };
 
-const INITIAL_CONTRACT_STATE = {
-  address: NFTAddress,
-  owner: undefined,
-  publicSaleActive: undefined,
-  name: undefined,
-  symbol: undefined,
-  baseURI: undefined,
-  balance: undefined,
-  items: undefined,
-};
-
-const getContractState = async (contract) => {
-  if (!contract.provider) return INITIAL_CONTRACT_STATE;
-
-  console.log('fetching contract state..');
-
-  const owner = await contract.owner();
-  const publicSaleActive = await contract.publicSaleActive();
-  const totalSupply = await contract.totalSupply();
-  const items = await Promise.all(
-    [...Array(totalSupply.toNumber())].map(async (_, i) => ({
-      id: i,
-      uri: await contract.tokenURI(i),
-      // type: await contract.idToType(i),
-    }))
-  );
-
-  return {
-    address: contract.address,
-    owner: owner,
-    publicSaleActive: publicSaleActive,
-    totalSupply: totalSupply,
-    items: items,
-  };
-};
-
-const INITIAL_USER_STATE = {
-  balance: undefined,
-  items: undefined,
-};
-
-const getUserState = async (contract, account) => {
-  if (!contract.provider || account) return INITIAL_USER_STATE;
-  const balance = await contract.balanceOf(account);
-  const items = await Promise.all(
-    [...Array(balance.toNumber())].map(async (_, i) => await contract.tokenOfOwnerByIndex(account, i))
-  );
-
-  return {
-    balance: balance,
-    items: items,
-  };
-};
-
 export function ContractInterfaceProvider({ children }) {
-  const [contractState, setContractState] = useState(INITIAL_CONTRACT_STATE);
-  const [userState, setUserState] = useState(INITIAL_USER_STATE);
   const [isSendingTx, setIsSendingTx] = useState(false);
 
   const [alertState, setAlertState] = useState({
@@ -96,36 +41,29 @@ export function ContractInterfaceProvider({ children }) {
     severity: undefined,
   });
 
+  // const [contractState, setContractState] = useState(null);
+  // const [userState, setUserState] = useState(null);
+
   const { account, library, chainId } = useWeb3React();
+
   window.web3r = useWeb3React();
 
-  const contract = useMemo(() => {
-    // console.log('acc changed', library);
-    return new ethers.Contract(NFTAddress, NFTAbi, library);
-  }, [account]);
+  // const updateMintState = async () => {
+  //   getContractState(contract).then(setContractState);
+  // };
 
-  const signContract = useMemo(() => {
-    return new ethers.Contract(NFTAddress, NFTAbi, library?.getSigner());
-  }, [account]);
+  // const updateUserState = async () => {
+  //   getUserState(contract, account).then(setUserState);
+  // };
 
-  const updateContractState = async () => {
-    getContractState(contract).then(setContractState);
-  };
+  // useEffect(() => {
+  //   if (library?.provider) {
+  //     contract.on(contract.filters.PublicSaleStateUpdate(), updateMintState);
+  //     updateMintState();
+  //   }
+  // }, [chainId]); // XXX: should find better trigger and clean up event listener
 
-  const updateUserState = async () => {
-    getUserState(contract, account).then(setUserState);
-  };
-
-  useEffect(() => {
-    if (library?.provider) contract.on(contract.filters.StateUpdate(), updateContractState);
-    updateContractState();
-  }, [chainId]); // XXX: should find better trigger and clean up event listener
-
-  // console.log('account', account);
-  // console.log('STATE', contractState);
-  // console.log('contract', contract);
-  window.contract = contract;
-  window.signContract = signContract;
+  // ------- handle transactions --------
 
   const handleAlertClose = (event, reason) => {
     if (reason !== 'clickaway') setAlertState({ ...alertState, open: false });
@@ -138,8 +76,6 @@ export function ContractInterfaceProvider({ children }) {
       severity: severity || 'error',
     });
   };
-
-  // ------- handle transactions --------
 
   const handleTxError = useCallback(
     (error) => {
@@ -168,12 +104,6 @@ export function ContractInterfaceProvider({ children }) {
   }, []);
 
   const context = {
-    contract: contract,
-    signContract: signContract,
-    contractState: contractState,
-    userState: userState,
-    updateUserState: updateUserState,
-    updateContractState: updateContractState,
     handleTx: handleTx,
     handleTxError: handleTxError,
     isSendingTx: isSendingTx,
@@ -182,7 +112,7 @@ export function ContractInterfaceProvider({ children }) {
   return (
     <ContractContext.Provider value={context}>
       <Fragment>{children}</Fragment>
-      <Snackbar open={alertState.open} autoHideDuration={6000} onClose={handleAlertClose}>
+      <Snackbar open={alertState.open} autoHideDuration={3000} onClose={handleAlertClose}>
         <MuiAlert onClose={handleAlertClose} severity={alertState.severity}>
           {alertState.message}
         </MuiAlert>
@@ -195,23 +125,44 @@ export function useContractContext() {
   return useContext(ContractContext);
 }
 
-export function useContractState() {
-  const { contractState, updateContractState } = useContractContext();
-  return { ...contractState, updateContractState };
-}
-
-export function useUserState() {
-  const { userState, updateUserState } = useContractContext();
-  return { ...userState, updateUserState };
-}
-
 export function useTx() {
   const { handleTx, handleTxError, isSendingTx } = useContractContext();
   return { handleTx, handleTxError, isSendingTx };
 }
 
-export function useContract() {
-  const { contract, signContract, handleTx, handleTxError } = useContractContext();
+export function useNFTContract() {
+  const { handleTx, handleTxError } = useContractContext();
+  const { account, library } = useWeb3React();
+
+  const contract = useMemo(() => NFTContract.connect(library), [library?.provider]);
+  const signContract = useMemo(() => NFTContract.connect(library?.getSigner()), [account]);
+
+  window.nft = signContract;
+
+  return { contract, signContract, handleTx, handleTxError };
+}
+
+export function useSerumContract() {
+  const { handleTx, handleTxError } = useContractContext();
+  const { account, library } = useWeb3React();
+
+  const contract = useMemo(() => SerumContract.connect(library), [library?.provider]);
+  const signContract = useMemo(() => SerumContract.connect(library?.getSigner()), [account]);
+
+  window.serum = signContract;
+
+  return { contract, signContract, handleTx, handleTxError };
+}
+
+export function useMutantsContract() {
+  const { handleTx, handleTxError } = useContractContext();
+  const { account, library } = useWeb3React();
+
+  const contract = useMemo(() => MutantsContract.connect(library), [library?.provider]);
+  const signContract = useMemo(() => MutantsContract.connect(library?.getSigner()), [account]);
+
+  window.mutants = signContract;
+
   return { contract, signContract, handleTx, handleTxError };
 }
 
@@ -228,3 +179,6 @@ export function UnsupportedChainIdBanner() {
     );
   return null;
 }
+
+// export { useUserState } from './userState';
+// export { useContractState } from './contractState';
