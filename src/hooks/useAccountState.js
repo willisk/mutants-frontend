@@ -32,20 +32,20 @@ export function useAccountState({ key, fetchState, initialState, initializer }) 
     // or per provider update (if component has mounted already)
     // doesn't re-trigger when a component re-mounts
     if (
-      account != undefined &&
-      provider != undefined &&
+      account !== undefined &&
+      provider !== undefined &&
       !accountStateLoading[key] &&
       (componentDidMount || !accountStateInitialized[key])
     ) {
       // console.log('running expensive fetch:', key);
       accountStateLoading[key] = true;
-      if (initializer != undefined) initializer(); // should be called once every "update"?
+      if (initializer !== undefined) initializer(); // should be called once every "update"?
       updateState();
       setComponentDidMount(true);
     }
   }, [account]);
 
-  if (!accountStateInitialized[key] && initialState != undefined) return [initialState, updateState];
+  if (!accountStateInitialized[key] && initialState !== undefined) return [initialState, updateState];
 
   return [state, updateState];
 }

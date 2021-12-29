@@ -31,16 +31,16 @@ export function useContractState({ key, fetchState, initialState, initializer })
     // ensures that this will only be called once on init
     // or per provider update (if component has mounted already)
     // doesn't re-trigger when a component re-mounts
-    if (provider != undefined && !contractStateLoading[key] && (componentDidMount || !contractStateInitialized[key])) {
+    if (provider !== undefined && !contractStateLoading[key] && (componentDidMount || !contractStateInitialized[key])) {
       // console.log('running expensive fetch:', key);
       contractStateLoading[key] = true;
-      if (initializer != undefined) initializer(); // should be called once every "update"?
+      if (initializer !== undefined) initializer(); // should be called once every "update"?
       updateState();
       setComponentDidMount(true);
     }
   }, [provider]);
 
-  if (!contractStateInitialized[key] && initialState != undefined) return [initialState, updateState];
+  if (!contractStateInitialized[key] && initialState !== undefined) return [initialState, updateState];
 
   return [state, updateState];
 }

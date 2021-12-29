@@ -1,5 +1,5 @@
-import { createContext, useMemo, useEffect, useState, useContext, Fragment, useCallback } from 'react';
-import { Snackbar, Button, Link } from '@mui/material';
+import { createContext, useState, useContext, Fragment, useCallback } from 'react';
+import { Snackbar, Link } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 
 import { useWeb3React } from '@web3-react/core';
@@ -66,17 +66,20 @@ export function TransactionContextProvider({ children }) {
     [account]
   );
 
-  const handleTx = useCallback(async (tx) => {
-    setIsSendingTx(true);
-    alert(<TransactionLink txHash={tx.hash} message="Processing Transaction" chainId={chainId} />, 'info');
-    const receipt = await tx.wait();
-    alert(
-      <TransactionLink txHash={receipt.transactionHash} message="Transaction successful!" chainId={chainId} />,
-      'success'
-    );
-    setIsSendingTx(false);
-    return receipt;
-  }, []);
+  const handleTx = useCallback(
+    async (tx) => {
+      setIsSendingTx(true);
+      alert(<TransactionLink txHash={tx.hash} message="Processing Transaction" chainId={chainId} />, 'info');
+      const receipt = await tx.wait();
+      alert(
+        <TransactionLink txHash={receipt.transactionHash} message="Transaction successful!" chainId={chainId} />,
+        'success'
+      );
+      setIsSendingTx(false);
+      return receipt;
+    },
+    [chainId]
+  );
 
   const context = {
     handleTx: handleTx,

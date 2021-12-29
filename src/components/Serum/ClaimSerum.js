@@ -4,7 +4,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Box, Stack, TextField, Typography } from '@mui/material';
 import { Button } from '@mui/material';
 
-import { useSerumClaimState, useSerumContract, useSerumState, useTx } from '../../hooks';
+import { useSerumClaimState, useSerumContract, useTx } from '../../hooks';
 import { useWeb3React } from '@web3-react/core';
 
 export default function ClaimSerum() {
@@ -19,7 +19,7 @@ export default function ClaimSerum() {
   const { handleTx, handleTxError } = useTx();
   const { contract: serumContract, signContract } = useSerumContract();
 
-  const [{ claimActive, tokenIds, claimed, unclaimedIds }, updateClaimState] = useSerumClaimState();
+  const [{ claimActive, unclaimedIds }, updateClaimState] = useSerumClaimState();
 
   const signer = library?.getSigner();
 
@@ -49,7 +49,7 @@ export default function ClaimSerum() {
   return (
     <Fragment>
       <Stack spacing={2}>
-        {unclaimedIds.length == 0 ? (
+        {unclaimedIds.length === 0 ? (
           <Typography>You are not eligible to claim Serum.</Typography>
         ) : (
           <Fragment>

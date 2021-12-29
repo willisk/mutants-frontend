@@ -25,7 +25,7 @@ export default function MintPublic() {
   const signer = library?.getSigner();
 
   const amountLeft = (totalSupply && maxSupply - totalSupply?.toNumber()) || 0;
-  const isSoldOut = amountLeft == 0;
+  const isSoldOut = amountLeft === 0;
 
   const updateMintAmount = (amount) => {
     if (0 < amount && amount <= purchaseLimit) setMintAmount(amount);

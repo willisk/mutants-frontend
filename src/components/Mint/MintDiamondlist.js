@@ -23,7 +23,7 @@ export default function MintDiamondlist({ signature }) {
   const signer = library?.getSigner();
 
   const amountLeft = (totalSupply && maxSupply - totalSupply?.toNumber()) || 0;
-  const isSoldOut = amountLeft == 0;
+  const isSoldOut = amountLeft === 0;
 
   const onMintPressed = () => {
     setIsMinting(true);

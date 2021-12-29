@@ -16,7 +16,7 @@ const shortenAddress = (address) => {
 };
 
 export const WalletConnectButton = () => {
-  const { account, activate, deactivate } = useWeb3React();
+  const { account, activate } = useWeb3React();
 
   const addressInfo = account ? shortenAddress(account) : 'Connect Wallet';
 

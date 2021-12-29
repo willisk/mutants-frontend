@@ -1,6 +1,6 @@
-import { useState, Fragment, useEffect } from 'react';
+import { useState, Fragment } from 'react';
 
-import { Box, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Skeleton, Button, ButtonGroup } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 
@@ -25,7 +25,7 @@ export default function MutantsPublicMint() {
   const signer = library?.getSigner();
 
   const amountLeft = (totalSupply && maxSupply - totalSupply?.toNumber()) || 0;
-  const isSoldOut = amountLeft == 0;
+  const isSoldOut = amountLeft === 0;
 
   const updateMintAmount = (amount) => {
     if (0 < amount && amount <= purchaseLimit) setMintAmount(amount);

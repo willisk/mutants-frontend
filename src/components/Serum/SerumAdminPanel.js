@@ -14,7 +14,7 @@ export default function AdminPanel() {
   const { contract, signContract, handleTx, handleTxError } = useSerumContract();
   const [{ baseURI, balance, randomSeedSet, megaIdsSet }, updateAdminInfo] = useSerumAdminState();
 
-  const [_, updateSerumState] = useSerumState();
+  const [, updateSerumState] = useSerumState();
 
   const update = () => {
     updateAdminInfo();

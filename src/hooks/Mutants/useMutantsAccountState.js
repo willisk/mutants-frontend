@@ -18,5 +18,5 @@ export default function useMutantsAccountState() {
     return { tokenIds, serumIds };
   };
 
-  return useAccountState({ key, fetchState });
+  return useAccountState({ key, fetchState, initialState: { tokenIds: [], serumIds: [0, 0, 0] } });
 }
