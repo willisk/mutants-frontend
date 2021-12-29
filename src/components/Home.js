@@ -1,17 +1,18 @@
 import { Fragment, useContext, useState } from 'react';
 import { Box, Button, Typography, Tabs, Tab, Divider } from '@mui/material';
-import { ContractInterfaceProvider, UnsupportedChainIdBanner, useContractState } from '../lib/ContractConnector';
+import { TransactionContext, UnsupportedChainIdBanner, useContractState } from '../lib/ContractConnector';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 import { TwitterLogo, DiscordLogo, GithubLogo, PolygonLogo } from '../images/logos';
 import { WalletConnectButton } from '../lib/WalletConnectButton';
 
 // import { Home } from './_Main';
-import { Mint } from './Mint';
+import { Mint } from './Mint/Mint';
 import { Serum } from './Serum';
 import { Mutants } from './Mutants';
-// import { Serum } from './Serum';
-// import { Mutants } from './Mutants';
+import Confetti from 'react-confetti';
+import { useParty } from '../hooks/useParty';
+import useWindowSize from 'react-use/lib/useWindowSize';
 
 function SocialsButton(props) {
   const Logo = props.logo;
@@ -43,9 +44,20 @@ export function Home() {
   const [activeTab, setActiveTab] = useState(window.location?.pathname || DEFAULT_TAB);
 
   const highlightedTab = ALL_ROUTES.includes(activeTab) ? activeTab : DEFAULT_TAB;
+  const { width, height } = useWindowSize();
+
+  const { recycleConfetti, runConfetti } = useParty();
 
   return (
     <Fragment>
+      <Confetti
+        width={width}
+        height={height}
+        numberOfPieces={200}
+        run={runConfetti}
+        recycle={recycleConfetti}
+        gravity={0.1}
+      />
       <UnsupportedChainIdBanner />
       <BrowserRouter>
         <Box className="App" textAlign="center">
@@ -71,7 +83,6 @@ export function Home() {
                   </Tabs>
                 </Box>
                 <WalletConnectButton />
-                {/* {wallet ? <p>Balance: {(balance || 0).toLocaleString()} SOL</p> : <WalletDialogButton />} */}
               </Box>
               <Divider />
             </Box>

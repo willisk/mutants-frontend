@@ -8,40 +8,21 @@ import { STextFieldReadOnly } from './defaults';
 import { useWeb3React } from '@web3-react/core';
 import { useMutantsContract, useSerumContract } from '../lib/ContractConnector';
 import { formatEther } from 'ethers/lib/utils';
-import { signGiveaway } from '../lib/utils';
-import { config } from '../config';
-import { useMintState } from './Mint';
-import { useMutantsContext } from './Mutants';
 
-const { NFTAddress } = config;
-
-const initialContractInfo = {
-  baseURI: '',
-  balance: '0',
-};
+import { useMutantsContext } from '../hooks/useMutantsContext';
+import { useMutantsAdminContext } from '../hooks/useMutantsAdminContext';
 
 function AdminPanel() {
-  const { account, library } = useWeb3React();
+  const { library } = useWeb3React();
   const { contract, signContract, handleTx, handleTxError } = useMutantsContract();
 
   const [baseURIInput, setBaseURIInput] = useState('');
+  const [forceMegaId, setForceMegaId] = useState('');
 
-  const [{ baseURI, balance, randomSeedSet }, setContractInfo] = useState(initialContractInfo);
+  const [{ publicSaleActive, mutationsActive }, updateState] = useMutantsContext();
+  const [{ randomSeedSet, baseURI, balance }, updateAdminState] = useMutantsAdminContext();
 
-  const { publicSaleActive, mutationsActive, updateState } = useMutantsContext();
   const signer = library?.getSigner();
-
-  const updateAdminInfo = async () =>
-    setContractInfo({
-      randomSeedSet: await contract.randomSeedSet(),
-
-      baseURI: await contract.baseURI(),
-      balance: await contract?.provider.getBalance(contract.address),
-    });
-
-  useEffect(() => {
-    updateAdminInfo();
-  }, []);
 
   return (
     <Box>
@@ -103,21 +84,46 @@ function AdminPanel() {
                   <Box display="flex" flexDirection="row" gap={1}>
                     <Button
                       onClick={() =>
-                        signContract.forceFulfillRandomness().then(handleTx).then(updateAdminInfo).catch(handleTxError)
+                        signContract.forceFulfillRandomness().then(handleTx).then(updateAdminState).catch(handleTxError)
                       }
-                      disabled={!signer || randomSeedSet || publicSaleActive}
+                      disabled={!signer || randomSeedSet}
                       variant="contained"
                     >
                       force
                     </Button>
                     <Button
                       onClick={() =>
-                        signContract.requestRandomSeed().then(handleTx).then(updateAdminInfo).catch(handleTxError)
+                        signContract.requestRandomSeed().then(handleTx).then(updateAdminState).catch(handleTxError)
                       }
-                      disabled={!signer || randomSeedSet || publicSaleActive}
+                      disabled={!signer || randomSeedSet}
                       variant="contained"
                     >
                       request
+                    </Button>
+                  </Box>
+                ),
+              }}
+            />
+            <TextField
+              label="Force Mega Id"
+              variant="standard"
+              value={forceMegaId}
+              onChange={(event) => setForceMegaId(event.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <Box display="flex" flexDirection="row" gap={1}>
+                    <Button
+                      onClick={() =>
+                        signContract
+                          .forceFulfillRandomMegaMutant(forceMegaId)
+                          .then(handleTx)
+                          .then(updateAdminState)
+                          .catch(handleTxError)
+                      }
+                      disabled={!signer}
+                      variant="contained"
+                    >
+                      force
                     </Button>
                   </Box>
                 ),
@@ -130,7 +136,7 @@ function AdminPanel() {
                 endAdornment: (
                   <Button
                     variant="contained"
-                    onClick={() => signContract.withdraw().then(handleTx).then(updateAdminInfo).catch(handleTxError)}
+                    onClick={() => signContract.withdraw().then(handleTx).then(updateAdminState).catch(handleTxError)}
                     disabled={!signer}
                   >
                     withdraw
@@ -148,7 +154,7 @@ function AdminPanel() {
                 endAdornment: (
                   <Button
                     onClick={() =>
-                      signContract.setBaseURI(baseURIInput).then(handleTx).then(updateAdminInfo).catch(handleTxError)
+                      signContract.setBaseURI(baseURIInput).then(handleTx).then(updateAdminState).catch(handleTxError)
                     }
                     disabled={!signer}
                     variant="contained"

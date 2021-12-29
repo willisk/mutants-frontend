@@ -12,36 +12,15 @@ import { useWeb3React } from '@web3-react/core';
 
 import { SerumContract } from '../config';
 import AdminPanel from './SerumAdminPanel';
+import { useSerumContext } from '../hooks/useSerumContext';
 
 const BN = BigNumber.from;
 
 // const { maxSupply, mintPrice, purchaseLimit, mintPriceWL, purchaseLimitWL } = nftContractConfig;
 
 export function Serum() {
-  const [claimActive, setClaimActive] = useState(false);
-  const [owner, setOwner] = useState('');
-
-  const { account, library } = useWeb3React();
-  const { contract: serumContract } = useSerumContract();
-
-  const signer = library?.getSigner();
-
-  const updateState = async () => {
-    const isActive = await serumContract.claimActive();
-    const owner = await serumContract.owner();
-    setClaimActive(isActive);
-    setOwner(owner);
-  };
-
-  const isContractOwner =
-    // true || //
-    account && owner && account.toLowerCase() === owner.toLowerCase();
-
-  useEffect(() => {
-    if (account) {
-      updateState();
-    }
-  }, [account]);
+  const [{ isContractOwner, claimActive }] = useSerumContext();
+  console.log(useSerumContext());
 
   return (
     <Fragment>

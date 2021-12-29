@@ -1,148 +1,62 @@
-import { useMemo, useState, useContext, useEffect, Fragment, createContext } from 'react';
-import Countdown from 'react-countdown';
-import Confetti from 'react-confetti';
+import { useState, Fragment } from 'react';
+// import Countdown from 'react-countdown';
 
 import LoadingButton from '@mui/lab/LoadingButton';
-import MuiAlert from '@mui/material/Alert';
 import { Box, TextField, Typography } from '@mui/material';
-import { Skeleton, Snackbar, Button, ButtonGroup } from '@mui/material';
+import { Skeleton, Button, ButtonGroup } from '@mui/material';
 
-import { ethers, BigNumber } from 'ethers';
+import { ethers } from 'ethers';
 
-import { SStack, STextField, STextFieldReadOnly, SDateTimePicker } from './defaults';
-
-import { nftContractConfig } from '../config';
-// import { useNFTContract, useContractState } from '../lib/ContractConnector';
+import { nftContractConfig } from '../../config';
 import { useWeb3React } from '@web3-react/core';
-import useWindowSize from 'react-use/lib/useWindowSize';
+import { useParty } from '../../hooks/useParty';
 import AdminPanel from './MintAdminPanel';
 
-import { whitelist, diamondlist } from '../data/whitelist';
-import { useContractContext, useNFTContract } from '../lib/ContractConnector';
+import { whitelist, diamondlist } from '../../data/whitelist';
+import { useNFTContract } from '../../lib/ContractConnector';
+
+import { useMintState } from '../../hooks/useMintState';
 
 const { maxSupply, mintPrice, purchaseLimit, mintPriceWL, purchaseLimitWL } = nftContractConfig;
-const BN = BigNumber.from;
-
-export const MintContext = createContext({});
-
-export const getContractState = async (contract) => {
-  console.log('calling update state');
-  if (contract == undefined) return {};
-  console.log('fetching update state');
-
-  const owner = await contract.owner();
-  const name = await contract.name();
-  const symbol = await contract.symbol();
-  const publicSaleActive = await contract.publicSaleActive();
-  const whitelistActive = await contract.whitelistActive();
-  const diamondlistActive = await contract.diamondlistActive();
-  const totalSupply = await contract.totalSupply();
-
-  // const items = await Promise.all(
-  //   [...Array(totalSupply.toNumber())].map(async (_, i) => ({
-  //     id: i,
-  //     uri: await contract.tokenURI(i),
-  //     // type: await contract.idToType(i),
-  //   }))
-  // );
-
-  return {
-    // address: contract.address,
-    owner: owner,
-    name: name,
-    symbol: symbol,
-    publicSaleActive: publicSaleActive,
-    whitelistActive: whitelistActive,
-    diamondlistActive: diamondlistActive,
-    totalSupply: totalSupply,
-    // items: items,
-    loaded: true,
-  };
-};
-
-export function useMintState() {
-  return useContext(MintContext);
-}
 
 export function Mint() {
-  const [confetti, setConfetti] = useState(false);
-  const [confettiRunning, setConfettiRunning] = useState(false);
-
-  const [mintState, setMintState] = useState({});
-
-  const { account, library } = useWeb3React();
-  const { width, height } = useWindowSize();
-  const { contract } = useNFTContract();
-
-  const updateMintState = () => {
-    getContractState(contract).then(setMintState);
-  };
-
-  useEffect(() => {
-    if (library?.provider) {
-      contract.on(contract.filters.PublicSaleStateUpdate(), updateMintState); // needs proper cleanup
-      updateMintState();
-    }
-  }, [library?.provider]);
-
-  const startParty = () => {
-    setConfetti(true);
-    setConfettiRunning(true);
-    setTimeout(() => setConfetti(false), 800);
-  };
+  const { account } = useWeb3React();
 
   return (
-    <MintContext.Provider value={{ ...mintState, updateMintState }}>
+    <Fragment>
       <AdminPanel />
       <Box display="flex" flexDirection="column" justifyContent="space-between" marginBlock={10}>
-        <Confetti
-          width={width}
-          height={height}
-          numberOfPieces={200}
-          run={confettiRunning}
-          recycle={confetti}
-          gravity={0.1}
-        />
-        {diamondlist[account] ? (
+        {diamondlist[account] && (
           <Box marginBlock={4}>
             <Typography variant="h4">Diamondlist</Typography>
             <Typography>You are eligible.</Typography>
-            <MintDiamondlist startParty={startParty} signature={diamondlist[account]} />
+            <MintDiamondlist signature={diamondlist[account]} />
           </Box>
-        ) : whitelist[account] ? (
+        )}
+        {whitelist[account] && (
           <Box marginBlock={4}>
             <Typography variant="h4">Whitelist</Typography>
             <Typography>You are eligible.</Typography>
-            <MintWhitelist startParty={startParty} signature={whitelist[account]} />
-          </Box>
-        ) : (
-          <Box marginBlock={4}>
-            <MintPublic startParty={startParty} />
+            <MintWhitelist signature={whitelist[account]} />
           </Box>
         )}
-        {/* <Box marginBlock={4}>
-          <MintPublic startParty={startParty} />
-        </Box>
         <Box marginBlock={4}>
-          <Typography variant="h4">Whitelist</Typography>
-          <MintWhitelist startParty={startParty} />
+          <MintPublic />
         </Box>
-        <Box marginBlock={4}>
-          <Typography variant="h4">Diamondlist</Typography>
-          <MintDiamondlist startParty={startParty} />
-        </Box> */}
       </Box>
-    </MintContext.Provider>
+    </Fragment>
   );
 }
 
-function MintPublic({ startParty }) {
+function MintPublic() {
   const [mintAmount, setMintAmount] = useState(1);
   const [isMinting, setIsMinting] = useState(false);
 
   const { library } = useWeb3React();
   const { signContract, handleTxError, handleTx } = useNFTContract();
-  const { publicSaleActive, totalSupply, updateMintState } = useMintState();
+  const [{ publicSaleActive, totalSupply }, updateMintState] = useMintState();
+
+  const { startParty } = useParty();
 
   const signer = library?.getSigner();
 
@@ -216,14 +130,16 @@ function MintPublic({ startParty }) {
   );
 }
 
-function MintWhitelist({ startParty, signature }) {
+function MintWhitelist({ signature }) {
   const [mintAmount, setMintAmount] = useState(1);
   const [isMinting, setIsMinting] = useState(false);
   const [sig, setSig] = useState(signature);
 
   const { library } = useWeb3React();
   const { signContract, handleTxError, handleTx } = useNFTContract();
-  const { publicSaleActive, totalSupply, updateMintState } = useMintState();
+  const [{ publicSaleActive, totalSupply }, updateMintState] = useMintState();
+
+  const { startParty } = useParty();
 
   const signer = library?.getSigner();
 
@@ -299,13 +215,15 @@ function MintWhitelist({ startParty, signature }) {
   );
 }
 
-function MintDiamondlist({ startParty, signature }) {
+function MintDiamondlist({ signature }) {
   const [isMinting, setIsMinting] = useState(false);
   const [sig, setSig] = useState(signature);
 
   const { library } = useWeb3React();
   const { signContract, handleTxError, handleTx } = useNFTContract();
-  const { diamondlistActive, totalSupply, updateMintState } = useMintState();
+  const [{ diamondlistActive, totalSupply }, updateMintState] = useMintState();
+
+  const { startParty } = useParty();
 
   const signer = library?.getSigner();
 

@@ -10,7 +10,7 @@ import { useMutantsContract, useSerumContract } from '../lib/ContractConnector';
 import { formatEther } from 'ethers/lib/utils';
 import { signGiveaway } from '../lib/utils';
 import { config } from '../config';
-import { useMintState } from './Mint';
+import { useMintState } from './Mint/Mint';
 
 const { NFTAddress } = config;
 

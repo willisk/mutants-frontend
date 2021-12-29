@@ -26,6 +26,7 @@
     "react-router-dom": "^6.1.1",
     "react-scripts": "4.0.3",
     "react-use": "^17.3.1",
+    "recoil": "^0.5.2",
     "styled-components": "^5.3.1",
     "use-constructor": "^0.0.3",
     "web-vitals": "^1.0.1"

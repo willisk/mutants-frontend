@@ -1,25 +1,19 @@
 import './MintAdminPanel';
 import React, { useEffect } from 'react';
-import { useMemo, useState, useContext } from 'react';
+import { useState } from 'react';
 import { Button, TextField, Stack, Box, Accordion, AccordionSummary, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { STextFieldReadOnly } from './defaults';
 import { useWeb3React } from '@web3-react/core';
-import { useNFTContract } from '../lib/ContractConnector';
+import { useNFTContract } from '../../lib/ContractConnector';
 import { formatEther } from 'ethers/lib/utils';
-import { signGiveaway } from '../lib/utils';
-import { config } from '../config';
-import { useMintState } from './Mint';
+import { signGiveaway } from '../../lib/utils';
+import { config } from '../../config';
+import { useMintState } from '../../hooks/useMintState';
+import { useMintAdminState } from '../../hooks/useMintAdminState';
 
 const { NFTAddress } = config;
-
-const initialContractInfo = {
-  name: '',
-  symbol: '',
-  baseURI: '',
-  balance: '0',
-};
 
 function AdminPanel() {
   const { account, library } = useWeb3React();
@@ -31,30 +25,11 @@ function AdminPanel() {
   const [diamondlist, setDiamondlist] = useState('');
   const [diamondlistSig, setDiamondlistSig] = useState('');
 
-  const [{ name, symbol, baseURI, balance }, setContractInfo] = useState(initialContractInfo);
-
-  const { address, owner, publicSaleActive, whitelistActive, diamondlistActive, totalSupply, updateMintState } =
+  const [{ owner, isContractOwner, publicSaleActive, whitelistActive, diamondlistActive }, updateMintState] =
     useMintState();
-
-  const isContractOwner =
-    // true || //
-    account && owner && account.toLowerCase() === owner.toLowerCase();
+  const [{ name, symbol, baseURI, balance }, updateAdminInfo] = useMintAdminState();
 
   const signer = library?.getSigner();
-
-  const updateAdminInfo = async () => {
-    const name = await contract.name();
-    const symbol = await contract.symbol();
-    const baseURI = await contract.baseURI();
-    const balance = await contract?.provider.getBalance(contract.address);
-
-    setContractInfo({
-      name: name,
-      symbol: symbol,
-      baseURI: baseURI,
-      balance: balance,
-    });
-  };
 
   useEffect(() => {
     if (isContractOwner) updateAdminInfo();
@@ -223,4 +198,5 @@ function AdminPanel() {
     </Box>
   );
 }
+
 export default AdminPanel;

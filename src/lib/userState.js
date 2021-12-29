@@ -1,4 +1,4 @@
-import { useContractContext } from './ContractConnector';
+import { useTx } from './ContractConnector';
 
 const INITIAL_USER_STATE = {
   balance: undefined,
@@ -20,6 +20,6 @@ export const getUserState = async (contract, account) => {
 };
 
 export function useUserState() {
-  const { userState, updateUserState } = useContractContext();
+  const { userState, updateUserState } = useTx();
   return { ...userState, updateUserState };
 }

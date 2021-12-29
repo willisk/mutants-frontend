@@ -18,9 +18,9 @@ export const mutantsContractConfig = {
 };
 
 export const config = {
-  NFTAddress: '0x37783959966781eE419f7b038D357DF661778DEe',
-  MutantsAddress: '0x9131CF0FD40c266d94C8446a29B73256C6d50F87',
-  SerumAddress: '0x2524C7fE54976b6CA8C86D90D8a03912e4d9DeCB',
+  NFTAddress: '0x91531d2e2840012e418De8e1c539439a7Bc12231',
+  MutantsAddress: '0x5336a4c464CAAdB42ac5c8Af63F5ce802Aa21eA7',
+  SerumAddress: '0x32341e3504aB6a8CEB453080C0A9ea21B837be3e',
   supportedChainIds: [80001],
 };
 

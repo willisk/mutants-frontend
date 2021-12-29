@@ -4,62 +4,21 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Box, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { Skeleton, Button, ButtonGroup } from '@mui/material';
 
-import { ethers, BigNumber } from 'ethers';
+import { ethers } from 'ethers';
 
-// import { nftContractConfig } from '../config';
-import {
-  useNFTContract,
-  // useContractState,
-  useSerumContract,
-  useTx,
-  useMutantsContract,
-} from '../lib/ContractConnector';
+import { useNFTContract, useSerumContract, useTx, useMutantsContract } from '../lib/ContractConnector';
 import { useWeb3React } from '@web3-react/core';
 
 import AdminPanel from './MutantsAdminPanel';
 import { mutantsContractConfig } from '../config';
 
-const BN = BigNumber.from;
-
-// const { maxSupply, mintPrice, purchaseLimit, mintPriceWL, purchaseLimitWL } = nftContractConfig;
-
-const MutantsContext = createContext({});
-
-export function useMutantsContext() {
-  return useContext(MutantsContext);
-}
+import { useMutantsContext } from '../hooks/useMutantsContext';
 
 export function Mutants() {
-  const [context, setContext] = useState({});
-
-  const { account, library } = useWeb3React();
-  const { contract: mutantsContract } = useMutantsContract();
-
-  const signer = library?.getSigner();
-
-  const updateState = async () => {
-    setContext({
-      owner: await mutantsContract.owner(),
-      publicSaleActive: await mutantsContract.publicSaleActive(),
-      mutationsActive: await mutantsContract.mutationsActive(),
-      numPublicMinted: await mutantsContract.numPublicMinted(),
-    });
-  };
-
-  const { mutationsActive, publicSaleActive, owner } = context;
-
-  const isContractOwner =
-    // true || //
-    account && owner && account.toLowerCase() === owner.toLowerCase();
-
-  useEffect(() => {
-    if (account && signer) {
-      updateState();
-    }
-  }, [account]);
+  const [{ isContractOwner, publicSaleActive, mutationsActive }, updateState] = useMutantsContext();
 
   return (
-    <MutantsContext.Provider value={{ ...context, updateState }}>
+    <Fragment>
       {isContractOwner && <AdminPanel />}
       <Stack marginBlock={4} spacing={2}>
         {!publicSaleActive ? (
@@ -79,7 +38,7 @@ export function Mutants() {
           </Stack>
         )}
       </Stack>
-    </MutantsContext.Provider>
+    </Fragment>
   );
 }
 
@@ -189,8 +148,7 @@ export function Mutate() {
   const [id, setId] = useState('');
   const [SerumType, setSerumType] = useState(0);
 
-  const { handleTx, handleTxError } = useTx();
-  const { signContract } = useMutantsContract();
+  const { signContract, handleTx, handleTxError } = useMutantsContract();
 
   const onMutatePressed = async () => {
     await signContract.mutate(id, SerumType).then(handleTx).catch(handleTxError);
@@ -240,7 +198,7 @@ export function MutantsPublicMint() {
   const { library } = useWeb3React();
   const { signContract, handleTx, handleTxError } = useMutantsContract();
 
-  const { publicSaleActive, numPublicMinted: totalSupply, updateState } = useMutantsContext();
+  const [{ publicSaleActive, numPublicMinted: totalSupply }, updateState] = useMutantsContext();
   const { maxSupply, mintPrice, purchaseLimit } = mutantsContractConfig;
 
   const signer = library?.getSigner();
