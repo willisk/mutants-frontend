@@ -1,10 +1,10 @@
 import { useWeb3React } from '@web3-react/core';
-import { useMutantsContract } from '../lib/ContractConnector';
-import { useContractState } from './useContractState';
+import { useMutantsContract } from '../useContract';
+import { useContractState } from '../useContractState';
 
-const key = 'MutantsContext';
+const key = 'MutantsState';
 
-export function useMutantsContext() {
+export default function useMutantsState() {
   const { contract } = useMutantsContract();
   const { account } = useWeb3React();
 

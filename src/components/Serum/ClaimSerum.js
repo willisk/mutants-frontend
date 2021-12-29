@@ -1,81 +1,34 @@
-import { useState, Fragment, useEffect } from 'react';
+import { useState, Fragment } from 'react';
 
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Box, Stack, TextField, Typography } from '@mui/material';
-import { Skeleton, Button, ButtonGroup } from '@mui/material';
+import { Button } from '@mui/material';
 
-import { ethers, BigNumber } from 'ethers';
-
-// import { nftContractConfig } from '../config';
-import { useNFTContract, useContractState, useSerumContract, useTx } from '../lib/ContractConnector';
+import { useSerumClaimState, useSerumContract, useSerumState, useTx } from '../../hooks';
 import { useWeb3React } from '@web3-react/core';
 
-import { SerumContract } from '../config';
-import AdminPanel from './SerumAdminPanel';
-import { useSerumContext } from '../hooks/useSerumContext';
-
-const BN = BigNumber.from;
-
-// const { maxSupply, mintPrice, purchaseLimit, mintPriceWL, purchaseLimitWL } = nftContractConfig;
-
-export function Serum() {
-  const [{ isContractOwner, claimActive }] = useSerumContext();
-  console.log(useSerumContext());
-
-  return (
-    <Fragment>
-      {isContractOwner && <AdminPanel />}
-      <Box marginBlock={4}>
-        {claimActive ? <ClaimSerum /> : <Typography>Claiming Serum is not possible yet.</Typography>}
-      </Box>
-    </Fragment>
-  );
-}
-
-export function ClaimSerum() {
+export default function ClaimSerum() {
   const [isClaiming, setIsClaiming] = useState(false);
-  const [claimActive, setClaimActive] = useState(false);
 
   const [checkIdInput, setCheckIdInput] = useState('');
   const [checkIdNum, setCheckIdNum] = useState('');
   const [checkIdSerumType, setCheckIdSerumType] = useState('');
   const [checkIdClaimed, setCheckIdClaimed] = useState(false);
 
-  const [unclaimedIds, setUnclaimedIds] = useState([]);
-
-  const { account, library } = useWeb3React();
+  const { library } = useWeb3React();
   const { handleTx, handleTxError } = useTx();
-  const { contract: nftContract } = useNFTContract();
   const { contract: serumContract, signContract } = useSerumContract();
 
+  const [{ claimActive, tokenIds, claimed, unclaimedIds }, updateClaimState] = useSerumClaimState();
+
   const signer = library?.getSigner();
-
-  const updateState = async () => {
-    const claimActive = await serumContract.claimActive();
-    const tokenIds = await nftContract.tokenIdsOf(account);
-    const claimed = await Promise.all(tokenIds.map((tokenId) => serumContract.claimed(tokenId)));
-
-    const unclaimedIds = tokenIds.filter((tokenId, i) => !claimed[i]);
-
-    setUnclaimedIds(unclaimedIds);
-    setClaimActive(claimActive);
-
-    console.log('tokenIds', tokenIds);
-    console.log('unclaimedIds', unclaimedIds);
-  };
-
-  useEffect(() => {
-    if (account) {
-      updateState();
-    }
-  }, [account]);
 
   const onClaimAllPressed = () => {
     setIsClaiming(true);
     signContract
       .claimSerumBatch(unclaimedIds)
       .then(handleTx)
-      .then(updateState)
+      .then(updateClaimState)
       .catch(handleTxError)
       .finally(() => {
         setIsClaiming(false);

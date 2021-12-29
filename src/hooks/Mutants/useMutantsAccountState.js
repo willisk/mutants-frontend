@@ -1,9 +1,10 @@
-import { useNFTContract } from '../lib/ContractConnector';
-import { useAccountState } from './useAccountState';
+import { useWeb3React } from '@web3-react/core';
+import { useAccountState } from '../useAccountState';
+import { useNFTContract, useSerumContract } from '../useContract';
 
 const key = 'MutantsAccountState';
 
-export function useMutantsAccountState() {
+export default function useMutantsAccountState() {
   const { account } = useWeb3React();
   const { contract: nftContract } = useNFTContract();
   const { contract: serumContract } = useSerumContract();

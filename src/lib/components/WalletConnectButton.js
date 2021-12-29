@@ -5,12 +5,10 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 
 // import useWeb3Modal from './hooks/useWeb3Modal';
 
-import { config } from '../config';
-const { supportedChainIds } = config;
+import { config } from '../../config';
 
 export const injected = new InjectedConnector({
-  // supportedChainIds: [1, 3, 4, 5, 42],
-  supportedChainIds: supportedChainIds,
+  supportedChainIds: config.supportedChainIds,
 });
 
 const shortenAddress = (address) => {

@@ -1,14 +1,17 @@
 import './App.css';
 import { Box, Button, CssBaseline, Typography, Tabs, Tab, Divider } from '@mui/material';
-import { Fragment, useState } from 'react';
+import { createContext, Fragment, useContext, useState } from 'react';
 import { ThemeProvider, createTheme, themeOptions } from '@mui/material/styles';
 
 import { RecoilRoot } from 'recoil';
 
-import { TransactionContext, UnsupportedChainIdBanner } from './lib/ContractConnector';
+import { TransactionContextProvider } from './hooks/useTx';
+// import { TransactionContext, UnsupportedChainIdBanner } from './lib/ContractConnector';
 import { Home } from './components/Home';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
+
+import { ConfettiProvider } from './hooks';
 
 function getLibrary(provider) {
   const library = new Web3Provider(provider);
@@ -35,9 +38,11 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Web3ReactProvider getLibrary={getLibrary}>
-          <TransactionContext>
-            <Home />
-          </TransactionContext>
+          <TransactionContextProvider>
+            <ConfettiProvider>
+              <Home />
+            </ConfettiProvider>
+          </TransactionContextProvider>
         </Web3ReactProvider>
       </ThemeProvider>
     </RecoilRoot>

@@ -1,7 +1,7 @@
-import { useNFTContract } from '..';
+import { useSerumContract } from '../useContract';
 import { useContractState } from '../useContractState';
 
-const key = 'MintAdminState';
+const key = 'SerumAdminState';
 
 const initialState = {
   name: '',
@@ -10,14 +10,14 @@ const initialState = {
   balance: '0',
 };
 
-export default function useMintAdminState() {
-  const { contract } = useNFTContract();
+export default function useSerumAdminState() {
+  const { contract } = useSerumContract();
 
   const fetchState = async () => ({
-    name: await contract.name(),
-    symbol: await contract.symbol(),
     baseURI: await contract.baseURI(),
     balance: await contract?.provider.getBalance(contract.address),
+    randomSeedSet: await contract.randomSeedSet(),
+    megaIdsSet: await contract.megaIdsSet(),
   });
 
   return useContractState({ key, fetchState, initialState });

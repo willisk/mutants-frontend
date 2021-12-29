@@ -4,7 +4,6 @@ import MuiAlert from '@mui/material/Alert';
 
 import { useWeb3React } from '@web3-react/core';
 
-import { Box } from '@mui/system';
 import { getTransactionLink } from '../lib/ChainIds';
 
 export const TransactionContext = createContext({});
@@ -26,7 +25,7 @@ const parseTxError = (e) => {
   }
 };
 
-export function TransactionContext({ children }) {
+export function TransactionContextProvider({ children }) {
   const [isSendingTx, setIsSendingTx] = useState(false);
 
   const [alertState, setAlertState] = useState({
@@ -99,20 +98,6 @@ export function TransactionContext({ children }) {
 
 export function useTx() {
   return useContext(TransactionContext);
-}
-
-export function UnsupportedChainIdBanner() {
-  const { error, chainId } = useWeb3React();
-
-  // console.log('chainId', chainId);
-
-  if (error?.name === 'UnsupportedChainIdError')
-    return (
-      <Box className="invalid-network-banner" sx={{ background: 'orange', color: 'black' }}>
-        Warning: Unsupported chain id. Please switch to the Polygon network.
-      </Box>
-    );
-  return null;
 }
 
 // export { useUserState } from './userState';

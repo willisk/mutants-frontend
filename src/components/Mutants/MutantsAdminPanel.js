@@ -1,16 +1,14 @@
-import './MintAdminPanel';
-import React, { Fragment, useEffect } from 'react';
-import { useMemo, useState, useContext } from 'react';
+import { useState } from 'react';
+
 import { Button, TextField, Stack, Box, Accordion, AccordionSummary, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import { STextFieldReadOnly } from './defaults';
 import { useWeb3React } from '@web3-react/core';
-import { useMutantsContract, useSerumContract } from '../lib/ContractConnector';
 import { formatEther } from 'ethers/lib/utils';
 
-import { useMutantsContext } from '../hooks/useMutantsContext';
-import { useMutantsAdminContext } from '../hooks/useMutantsAdminContext';
+import { STextFieldReadOnly } from '../defaults';
+
+import { useMutantsContract, useMutantsState, useMutantsAdminState } from '../../hooks';
 
 function AdminPanel() {
   const { library } = useWeb3React();
@@ -19,8 +17,8 @@ function AdminPanel() {
   const [baseURIInput, setBaseURIInput] = useState('');
   const [forceMegaId, setForceMegaId] = useState('');
 
-  const [{ publicSaleActive, mutationsActive }, updateState] = useMutantsContext();
-  const [{ randomSeedSet, baseURI, balance }, updateAdminState] = useMutantsAdminContext();
+  const [{ publicSaleActive, mutationsActive }, updateState] = useMutantsState();
+  const [{ randomSeedSet, baseURI, balance }, updateAdminState] = useMutantsAdminState();
 
   const signer = library?.getSigner();
 

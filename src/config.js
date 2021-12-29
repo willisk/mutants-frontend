@@ -22,6 +22,7 @@ export const config = {
   MutantsAddress: '0x5336a4c464CAAdB42ac5c8Af63F5ce802Aa21eA7',
   SerumAddress: '0x32341e3504aB6a8CEB453080C0A9ea21B837be3e',
   supportedChainIds: [80001],
+  validChainName: 'Mumbai',
 };
 
 export const NFTContract = new ethers.Contract(config.NFTAddress, NFTAbi);

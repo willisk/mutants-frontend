@@ -1,5 +1,5 @@
-import { useMutantsContract } from '../lib/ContractConnector';
-import { useContractState } from './useContractState';
+import { useMutantsContract } from '../useContract';
+import { useContractState } from '../useContractState';
 
 const key = 'MutantsAdminState';
 
@@ -8,7 +8,7 @@ const initialState = {
   balance: '0',
 };
 
-export function useMutantsAdminContext() {
+export default function useMutantsAdminState() {
   const { contract } = useMutantsContract();
 
   const fetchState = async () => ({

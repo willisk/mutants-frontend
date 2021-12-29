@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useWeb3React } from '@web3-react/core';
 
 import { MutantsContract, NFTContract, SerumContract } from '../config';
+import { useTx } from './useTx';
 
 export function useNFTContract() {
   const { handleTx, handleTxError } = useTx();

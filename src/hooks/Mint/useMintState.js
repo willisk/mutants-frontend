@@ -1,29 +1,24 @@
 import { useWeb3React } from '@web3-react/core';
-import { useNFTContract } from '../lib/ContractConnector';
-import { useContractState } from './useContractState';
+import { useContractState, useNFTContract } from '..';
 
 const key = 'MintState';
 
-export function useMintState() {
+export default function useMintState() {
   const { contract } = useNFTContract();
   const { account } = useWeb3React();
 
   const fetchState = async () => {
-    const state = {
-      owner: await contract.owner(),
-      name: await contract.name(),
-      symbol: await contract.symbol(),
-      publicSaleActive: await contract.publicSaleActive(),
-      whitelistActive: await contract.whitelistActive(),
-      diamondlistActive: await contract.diamondlistActive(),
-      totalSupply: await contract.totalSupply(),
-    };
+    const owner = await contract.owner();
+    const name = await contract.name();
+    const symbol = await contract.symbol();
+    const publicSaleActive = await contract.publicSaleActive();
+    const whitelistActive = await contract.whitelistActive();
+    const diamondlistActive = await contract.diamondlistActive();
+    const totalSupply = await contract.totalSupply();
 
-    const isContractOwner =
-      // true || //
-      account && state.owner && account.toLowerCase() === state.owner.toLowerCase();
+    const isContractOwner = account && owner && account.toLowerCase() === owner.toLowerCase();
 
-    return { ...state, isContractOwner };
+    return { owner, name, symbol, publicSaleActive, whitelistActive, diamondlistActive, totalSupply, isContractOwner };
   };
 
   const initializer = () => contract.on(contract.filters.PublicSaleStateUpdate(), fetchState);

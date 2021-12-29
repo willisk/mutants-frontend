@@ -1,47 +1,27 @@
-import './MintAdminPanel';
-import React, { Fragment, useEffect } from 'react';
-import { useMemo, useState, useContext } from 'react';
+import { useState } from 'react';
 import { Button, TextField, Stack, Box, Accordion, AccordionSummary, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import { STextFieldReadOnly } from './defaults';
+import { STextFieldReadOnly } from '../defaults';
 import { useWeb3React } from '@web3-react/core';
-import { useMutantsContract, useSerumContract } from '../lib/ContractConnector';
+import { useSerumAdminState, useSerumContract, useSerumState } from '../../hooks';
 import { formatEther } from 'ethers/lib/utils';
-import { signGiveaway } from '../lib/utils';
-import { config } from '../config';
-import { useMintState } from './Mint/Mint';
 
-const { NFTAddress } = config;
-
-const initialContractInfo = {
-  name: '',
-  symbol: '',
-  baseURI: '',
-  balance: '0',
-};
-
-function AdminPanel() {
-  const { account, library } = useWeb3React();
-  const { contract, signContract, handleTx, handleTxError } = useSerumContract();
-
+export default function AdminPanel() {
   const [baseURIInput, setBaseURIInput] = useState('');
 
-  const [{ baseURI, balance, randomSeedSet, megaIdsSet }, setContractInfo] = useState(initialContractInfo);
+  const { library } = useWeb3React();
+  const { contract, signContract, handleTx, handleTxError } = useSerumContract();
+  const [{ baseURI, balance, randomSeedSet, megaIdsSet }, updateAdminInfo] = useSerumAdminState();
+
+  const [_, updateSerumState] = useSerumState();
+
+  const update = () => {
+    updateAdminInfo();
+    updateSerumState();
+  };
 
   const signer = library?.getSigner();
-
-  const updateAdminInfo = async () =>
-    setContractInfo({
-      baseURI: await contract.baseURI(),
-      balance: await contract?.provider.getBalance(contract.address),
-      randomSeedSet: await contract.randomSeedSet(),
-      megaIdsSet: await contract.megaIdsSet(),
-    });
-
-  useEffect(() => {
-    updateAdminInfo();
-  }, []);
 
   return (
     <Box>
@@ -61,7 +41,7 @@ function AdminPanel() {
                   <Box display="flex" flexDirection="row" gap={1}>
                     <Button
                       onClick={() =>
-                        signContract.forceFulfillRandomness().then(handleTx).then(updateAdminInfo).catch(handleTxError)
+                        signContract.forceFulfillRandomness().then(handleTx).then(update).catch(handleTxError)
                       }
                       disabled={!signer || randomSeedSet}
                       variant="contained"
@@ -69,9 +49,7 @@ function AdminPanel() {
                       force
                     </Button>
                     <Button
-                      onClick={() =>
-                        signContract.requestRandomSeed().then(handleTx).then(updateAdminInfo).catch(handleTxError)
-                      }
+                      onClick={() => signContract.requestRandomSeed().then(handleTx).then(update).catch(handleTxError)}
                       disabled={!signer || randomSeedSet}
                       variant="contained"
                     >
@@ -88,9 +66,7 @@ function AdminPanel() {
                 endAdornment: (
                   <Button
                     sx={{ width: '220px' }}
-                    onClick={() =>
-                      signContract.setMegaSequence().then(handleTx).then(updateAdminInfo).catch(handleTxError)
-                    }
+                    onClick={() => signContract.setMegaSequence().then(handleTx).then(update).catch(handleTxError)}
                     disabled={!signer || megaIdsSet || !randomSeedSet}
                     variant="contained"
                   >
@@ -106,7 +82,7 @@ function AdminPanel() {
                 endAdornment: (
                   <Button
                     variant="contained"
-                    onClick={() => signContract.withdraw().then(handleTx).then(updateAdminInfo).catch(handleTxError)}
+                    onClick={() => signContract.withdraw().then(handleTx).then(update).catch(handleTxError)}
                     disabled={!signer}
                   >
                     withdraw
@@ -124,7 +100,7 @@ function AdminPanel() {
                 endAdornment: (
                   <Button
                     onClick={() =>
-                      signContract.setBaseURI(baseURIInput).then(handleTx).then(updateAdminInfo).catch(handleTxError)
+                      signContract.setBaseURI(baseURIInput).then(handleTx).then(update).catch(handleTxError)
                     }
                     disabled={!signer}
                     variant="contained"
@@ -140,4 +116,3 @@ function AdminPanel() {
     </Box>
   );
 }
-export default AdminPanel;

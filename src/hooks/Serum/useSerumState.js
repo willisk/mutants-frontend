@@ -1,10 +1,10 @@
 import { useWeb3React } from '@web3-react/core';
-import { useSerumContract } from '../lib/ContractConnector';
-import { useContractState } from './useContractState';
+import { useSerumContract } from '../useContract';
+import { useContractState } from '../useContractState';
 
-const key = 'SerumContext';
+const key = 'SerumState';
 
-export function useSerumContext() {
+export default function useSerumState() {
   const { contract } = useSerumContract();
   const { account } = useWeb3React();
 

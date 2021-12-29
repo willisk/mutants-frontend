@@ -6,7 +6,7 @@ const chains = {
   56: 'Binance Smartchain',
   137: 'Polygon Network',
   43114: 'AVAX Network',
-  80001: '',
+  80001: 'Mumbai Testnet',
 };
 
 export const getNetworkName = (chain) => chains[chain];

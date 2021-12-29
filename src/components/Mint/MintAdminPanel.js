@@ -1,22 +1,21 @@
-import './MintAdminPanel';
-import React, { useEffect } from 'react';
 import { useState } from 'react';
+
 import { Button, TextField, Stack, Box, Accordion, AccordionSummary, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import { STextFieldReadOnly } from './defaults';
 import { useWeb3React } from '@web3-react/core';
-import { useNFTContract } from '../../lib/ContractConnector';
 import { formatEther } from 'ethers/lib/utils';
+
+import { STextFieldReadOnly } from '../defaults';
+
 import { signGiveaway } from '../../lib/utils';
 import { config } from '../../config';
-import { useMintState } from '../../hooks/useMintState';
-import { useMintAdminState } from '../../hooks/useMintAdminState';
+import { useNFTContract, useMintState, useMintAdminState } from '../../hooks';
 
 const { NFTAddress } = config;
 
-function AdminPanel() {
-  const { account, library } = useWeb3React();
+export default function AdminPanel() {
+  const { library } = useWeb3React();
   const { contract, signContract, handleTx, handleTxError } = useNFTContract();
 
   const [baseURIInput, setBaseURIInput] = useState('');
@@ -25,17 +24,10 @@ function AdminPanel() {
   const [diamondlist, setDiamondlist] = useState('');
   const [diamondlistSig, setDiamondlistSig] = useState('');
 
-  const [{ owner, isContractOwner, publicSaleActive, whitelistActive, diamondlistActive }, updateMintState] =
-    useMintState();
+  const [{ owner, publicSaleActive, whitelistActive, diamondlistActive }, updateMintState] = useMintState();
   const [{ name, symbol, baseURI, balance }, updateAdminInfo] = useMintAdminState();
 
   const signer = library?.getSigner();
-
-  useEffect(() => {
-    if (isContractOwner) updateAdminInfo();
-  }, [account]);
-
-  if (!isContractOwner) return null;
 
   return (
     <Box>
@@ -140,7 +132,7 @@ function AdminPanel() {
                 endAdornment: (
                   <Button
                     onClick={() =>
-                      signContract.setBaseURI(baseURIInput).then(updateAdminInfo).then(handleTx).catch(handleTxError)
+                      signContract.setBaseURI(baseURIInput).then(handleTx).then(updateAdminInfo).catch(handleTxError)
                     }
                     disabled={!signer}
                     variant="contained"
@@ -198,5 +190,3 @@ function AdminPanel() {
     </Box>
   );
 }
-
-export default AdminPanel;
