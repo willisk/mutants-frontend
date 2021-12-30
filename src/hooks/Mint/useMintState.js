@@ -1,5 +1,5 @@
 import { useWeb3React } from '@web3-react/core';
-import { useContractState, useNFTContract } from '..';
+import { useAccountState, useNFTContract } from '..';
 
 const key = 'MintState';
 
@@ -23,5 +23,6 @@ export default function useMintState() {
 
   const initializer = () => contract.on(contract.filters.PublicSaleStateUpdate(), fetchState);
 
-  return useContractState({ key, fetchState, initializer });
+  // return useContractState({ key, fetchState, initializer });
+  return useAccountState({ key, fetchState, initializer }); // useAccountState, because isContractOwner is account dependent
 }

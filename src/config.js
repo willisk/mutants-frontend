@@ -21,11 +21,11 @@ export const config = {
   // NFTAddress: '0x46623964150429B8317FbDF07F982F472C659E47',
   // MutantsAddress: '0x912e32391eAF5b93F80FF1E957c52C911cFa4DC5',
   // SerumAddress: '0x466fbbb0f58368596bc7B138AEBdAD6c5B6012f2',
-  NFTAddress: '0x8a9Dd644938471870fe1E6dFdDE6B75375A143cE',
-  MutantsAddress: '0x34330bE0c7e99759FbBb665d5a66e8f386803827',
-  SerumAddress: '0x5970e1a60e2134760aeF3a28EE2d9F824785F60d',
-  supportedChainIds: [4, 80001],
-  validChainName: 'Mumbai',
+  NFTAddress: '0x09f7b9c205e6bc1c6B6518547Ae4AA150004C58F',
+  MutantsAddress: '0x7c0c67c4F47a95E52e375012fe6d370E52C057bA',
+  SerumAddress: '0x2Ff3533e0c13c7036e934C4C0c045b3e43f5b1B0',
+  supportedChainIds: [4],
+  validChainName: 'Rinkeby',
 };
 
 export const NFTContract = new ethers.Contract(config.NFTAddress, NFTAbi);

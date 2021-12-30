@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core';
+import { useAccountState } from '..';
 import { useMutantsContract } from '../useContract';
-import { useContractState } from '../useContractState';
 
 const key = 'MutantsState';
 
@@ -23,5 +23,5 @@ export default function useMutantsState() {
     return { ...state, isContractOwner };
   };
 
-  return useContractState({ key, fetchState });
+  return useAccountState({ key, fetchState });
 }

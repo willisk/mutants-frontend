@@ -14,7 +14,7 @@ export function useContractState({ key, fetchState, initialState, initializer })
   const [state, setState] = useRecoilState(contractState(key));
   const [componentDidMount, setComponentDidMount] = useState(false);
 
-  const { library } = useWeb3React();
+  const { account, library } = useWeb3React();
 
   const provider = library?.provider;
 
@@ -32,7 +32,6 @@ export function useContractState({ key, fetchState, initialState, initializer })
     // or per provider update (if component has mounted already)
     // doesn't re-trigger when a component re-mounts
     if (provider !== undefined && !contractStateLoading[key] && (componentDidMount || !contractStateInitialized[key])) {
-      // console.log('running expensive fetch:', key);
       contractStateLoading[key] = true;
       if (initializer !== undefined) initializer(); // should be called once every "update"?
       updateState();

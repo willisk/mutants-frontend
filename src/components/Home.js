@@ -20,9 +20,7 @@ function SocialsButton(props) {
 
 const Socials = () => (
   <Fragment>
-    <Box marginBlock="auto">
-      <SocialsButton href="https://solana.com/" logo={PolygonLogo} />
-    </Box>
+    <Box marginBlock="auto">{/* <SocialsButton href="https://solana.com/" logo={PolygonLogo} /> */}</Box>
     <Box marginBlock="auto">
       <SocialsButton href="" logo={GithubLogo} />
       <SocialsButton href="" logo={TwitterLogo} />
