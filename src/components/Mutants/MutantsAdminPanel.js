@@ -20,7 +20,7 @@ function AdminPanel() {
   const [forceMegaId, setForceMegaId] = useState('');
 
   const [{ publicSaleActive, mutationsActive }, updateState] = useMutantsState();
-  const [{ randomSeedSet, revealed, baseURI, balance }, updateAdminState] = useMutantsAdminState();
+  const [{ randomSeedSet, baseURI, balance }, updateAdminState] = useMutantsAdminState();
 
   const signer = library?.getSigner();
 
@@ -101,37 +101,6 @@ function AdminPanel() {
                       request
                     </Button>
                   </Box>
-                ),
-              }}
-            />
-            <TextField
-              variant="standard"
-              label="Secret Pass"
-              value={secretPass}
-              placeholder="0x..."
-              onChange={(event) => setSecretPass(event.target.value)}
-            />
-            <TextField
-              variant="standard"
-              label="Reveal"
-              value={revealURI}
-              placeholder={baseURI}
-              onChange={(event) => setRevealURI(event.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <Button
-                    onClick={() =>
-                      signContract
-                        .reveal(revealURI, secretPass)
-                        .then(handleTx)
-                        .then(updateAdminState)
-                        .catch(handleTxError)
-                    }
-                    disabled={!signer || !randomSeedSet || revealed}
-                    variant="contained"
-                  >
-                    reveal
-                  </Button>
                 ),
               }}
             />

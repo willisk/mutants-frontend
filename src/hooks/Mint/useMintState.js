@@ -21,7 +21,7 @@ export default function useMintState() {
     return { owner, name, symbol, publicSaleActive, whitelistActive, diamondlistActive, totalSupply, isContractOwner };
   };
 
-  const initializer = () => contract.on(contract.filters.PublicSaleStateUpdate(), fetchState);
+  const initializer = () => contract.on(contract.filters.SaleStateUpdate(), fetchState);
 
   // return useContractState({ key, fetchState, initializer });
   return useAccountState({ key, fetchState, initializer }); // useAccountState, because isContractOwner is account dependent

@@ -16,6 +16,7 @@ export default function useMintAdminState() {
   const fetchState = async () => ({
     name: await contract.name(),
     symbol: await contract.symbol(),
+    randomSeedSet: await contract.randomSeedSet(),
     baseURI: await contract.baseURI(),
     balance: await contract?.provider.getBalance(contract.address),
   });

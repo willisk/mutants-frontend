@@ -4,23 +4,23 @@ const { abi: SerumAbi } = require('./abi/Serum.json');
 const { abi: MutantsAbi } = require('./abi/Mutants.json');
 
 export const nftContractConfig = {
-  maxSupply: 1000,
+  maxSupply: 10000,
   mintPrice: ethers.utils.parseEther('0.03'),
-  purchaseLimit: 10,
-  mintPriceWL: ethers.utils.parseEther('0.03'),
+  purchaseLimit: 3,
+  mintPriceWL: ethers.utils.parseEther('0.02'),
   purchaseLimitWL: 2,
 };
 
 export const mutantsContractConfig = {
-  maxSupply: 1000,
+  maxSupply: 10000,
   mintPrice: ethers.utils.parseEther('0.03'),
   purchaseLimit: 10,
 };
 
 export const config = {
-  NFTAddress: '0xaC9255686e6c0fa9A97DaFD0B5A465EB94aA4880',
-  MutantsAddress: '0x8E888ae9dE24Fd485FF49099f2e8CE7C84271dc7',
-  SerumAddress: '0x286c9cAd13cB811017973A530923E259EC2c07b3',
+  NFTAddress: '0xeF1c8Fdfc6a83aDCb64Bc48ddc983A3f05DE1Da3',
+  MutantsAddress: '0x52C0E6436eCdCd37F8835C81e22101a7d1Aed5aD',
+  SerumAddress: '0xFdc4266c9B3787A5a8881E283b904B2A7DB9cc7e',
   supportedChainIds: [4],
   validChainName: 'Rinkeby',
 };

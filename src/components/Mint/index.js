@@ -11,7 +11,8 @@ import MintPublic from './MintPublic';
 import MintDiamondlist from './MintDiamondlist';
 import MintWhitelist from './MintWhitelist';
 
-import { whitelist, diamondlist } from '../../data/whitelist';
+// import { whitelist, diamondlist } from '../../data/whitelist';
+import { whitelist } from '../../data/whitelistSignatures';
 import { useMintState } from '../../hooks';
 
 export default function Mint() {
@@ -22,23 +23,23 @@ export default function Mint() {
     <Fragment>
       {isContractOwner && <AdminPanel />}
       <Box display="flex" flexDirection="column" justifyContent="space-between" marginBlock={10}>
-        {diamondlist[account] && (
+        {whitelist[1337][account?.toLowerCase()] && (
           <Box marginBlock={4}>
             <Typography variant="h4">Diamondlist</Typography>
             <Typography>You are eligible.</Typography>
             {diamondlistActive ? (
-              <MintDiamondlist signature={diamondlist[account]} />
+              <MintDiamondlist signature={whitelist[1337][account?.toLowerCase()]} />
             ) : (
               <Typography>Diamond list is not enabled yet.</Typography>
             )}
           </Box>
         )}
-        {whitelist[account] && (
+        {whitelist[69][account?.toLowerCase()] && (
           <Box marginBlock={4}>
             <Typography variant="h4">Whitelist</Typography>
             <Typography>You are eligible.</Typography>
             {whitelistActive ? (
-              <MintWhitelist signature={whitelist[account]} />
+              <MintWhitelist signature={whitelist[69][account?.toLowerCase()]} />
             ) : (
               <Typography>Whitelist is not enabled yet.</Typography>
             )}

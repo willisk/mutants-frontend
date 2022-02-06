@@ -13,7 +13,6 @@ export default function useMutantsAdminState() {
 
   const fetchState = async () => ({
     randomSeedSet: await contract.randomSeedSet(),
-    revealed: await contract.revealed(),
     baseURI: await contract.baseURI(),
     balance: await contract?.provider.getBalance(contract.address),
   });

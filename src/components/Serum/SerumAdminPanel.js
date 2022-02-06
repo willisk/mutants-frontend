@@ -12,7 +12,7 @@ export default function AdminPanel() {
 
   const { library } = useWeb3React();
   const { contract, signContract, handleTx, handleTxError } = useSerumContract();
-  const [{ baseURI, balance, randomSeedSet, megaIdsSet }, updateAdminInfo] = useSerumAdminState();
+  const [{ baseURI, randomSeedSet, megaIdsSet }, updateAdminInfo] = useSerumAdminState();
 
   const [, updateSerumState] = useSerumState();
 
@@ -71,21 +71,6 @@ export default function AdminPanel() {
                     variant="contained"
                   >
                     set sequence
-                  </Button>
-                ),
-              }}
-            />
-            <STextFieldReadOnly
-              label="Balance"
-              value={' Ξ ' + parseFloat(formatEther('' + balance)).toFixed(4)}
-              InputProps={{
-                endAdornment: (
-                  <Button
-                    variant="contained"
-                    onClick={() => signContract.withdraw().then(handleTx).then(update).catch(handleTxError)}
-                    disabled={!signer}
-                  >
-                    withdraw
                   </Button>
                 ),
               }}

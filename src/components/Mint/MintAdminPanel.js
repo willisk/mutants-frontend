@@ -25,7 +25,7 @@ export default function AdminPanel() {
   const [diamondlistSig, setDiamondlistSig] = useState('');
 
   const [{ owner, publicSaleActive, whitelistActive, diamondlistActive }, updateMintState] = useMintState();
-  const [{ name, symbol, baseURI, balance }, updateAdminInfo] = useMintAdminState();
+  const [{ name, symbol, baseURI, balance, randomSeedSet }, updateAdminInfo] = useMintAdminState();
 
   const signer = library?.getSigner();
 
@@ -104,6 +104,34 @@ export default function AdminPanel() {
                   >
                     {diamondlistActive ? 'pause' : 'activate'}
                   </Button>
+                ),
+              }}
+            />
+            <STextFieldReadOnly
+              label="Random Seed"
+              value={randomSeedSet ? 'set' : 'unset'}
+              InputProps={{
+                endAdornment: (
+                  <Box display="flex" flexDirection="row" gap={1}>
+                    <Button
+                      onClick={() =>
+                        signContract.forceFulfillRandomness().then(handleTx).then(updateAdminInfo).catch(handleTxError)
+                      }
+                      disabled={!signer || randomSeedSet}
+                      variant="contained"
+                    >
+                      force
+                    </Button>
+                    <Button
+                      onClick={() =>
+                        signContract.requestRandomSeed().then(handleTx).then(updateAdminInfo).catch(handleTxError)
+                      }
+                      disabled={!signer || randomSeedSet}
+                      variant="contained"
+                    >
+                      request
+                    </Button>
+                  </Box>
                 ),
               }}
             />

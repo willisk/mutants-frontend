@@ -19,7 +19,7 @@ export default function MintWhitelist({ signature }) {
 
   const { library } = useWeb3React();
   const { signContract, handleTxError, handleTx } = useNFTContract();
-  const [{ publicSaleActive, totalSupply }, updateMintState] = useMintState();
+  const [{ whitelistActive, totalSupply }, updateMintState] = useMintState();
 
   const startParty = useParty();
 
@@ -51,7 +51,7 @@ export default function MintWhitelist({ signature }) {
         <LoadingButton
           onClick={onMintPressed}
           loading={isMinting}
-          disabled={!signer || isMinting || !publicSaleActive || isSoldOut}
+          disabled={!signer || isMinting || !whitelistActive || isSoldOut}
           variant="contained"
         >
           {isSoldOut ? 'SOLD OUT!' : <span className="mint-button-text">MINT</span>}

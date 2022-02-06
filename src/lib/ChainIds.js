@@ -1,5 +1,5 @@
 const chains = {
-  1: 'ETH Mainnet',
+  1: 'Ethereum Mainnet',
   3: 'Ropsten Testnet',
   4: 'Rinkeby Testnet',
   42: 'Kovan Testnet',
@@ -9,18 +9,26 @@ const chains = {
   80001: 'Mumbai Testnet',
 };
 
-export const getNetworkName = (chain) => chains[chain];
+export const getNetworkName = (chain) => chains[chain] || 'Unknown Network';
 
 const blockExplorerURLs = {
-  1: 'https://etherscan.io/tx/',
-  3: 'https://ropsten.etherscan.io/tx/',
-  4: 'https://rinkeby.etherscan.io/tx/',
-  42: 'https://kovan.etherscan.io/tx/',
-  137: 'https://polygonscan.com/tx/',
-  43113: 'https://testnet.snowtrace.io/tx/',
+  1: 'https://etherscan.io/',
+  3: 'https://ropsten.etherscan.io/',
+  4: 'https://rinkeby.etherscan.io/',
+  42: 'https://kovan.etherscan.io/',
+  137: 'https://polygonscan.com/',
+  80001: 'https://mumbai.polygonscan.com/',
+  43113: 'https://testnet.snowtrace.io/',
+};
+
+export const getBlockExplorerUrl = (chainId) => {
+  return blockExplorerURLs[chainId] ?? 'https://etherscan.io/';
 };
 
 export const getTransactionLink = (txHash, chainId) => {
-  if (Object.keys(blockExplorerURLs).includes(chainId)) return blockExplorerURLs[chainId] + txHash;
-  return 'https://etherscan.io/tx/' + txHash;
+  return getBlockExplorerUrl(chainId) + 'tx/' + txHash;
+};
+
+export const getAddressLink = (address, chainId) => {
+  return getBlockExplorerUrl(chainId) + 'address/' + address;
 };

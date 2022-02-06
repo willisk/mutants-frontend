@@ -7,7 +7,6 @@ const initialState = {
   name: '',
   symbol: '',
   baseURI: '',
-  balance: '0',
 };
 
 export default function useSerumAdminState() {
@@ -15,7 +14,6 @@ export default function useSerumAdminState() {
 
   const fetchState = async () => ({
     baseURI: await contract.baseURI(),
-    balance: await contract?.provider.getBalance(contract.address),
     randomSeedSet: await contract.randomSeedSet(),
     megaIdsSet: await contract.megaIdsSet(),
   });
