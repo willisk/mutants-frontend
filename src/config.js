@@ -18,9 +18,9 @@ export const mutantsContractConfig = {
 };
 
 export const config = {
-  NFTAddress: '0xeF1c8Fdfc6a83aDCb64Bc48ddc983A3f05DE1Da3',
-  MutantsAddress: '0x52C0E6436eCdCd37F8835C81e22101a7d1Aed5aD',
-  SerumAddress: '0xFdc4266c9B3787A5a8881E283b904B2A7DB9cc7e',
+  NFTAddress: '0x98c97b8ddF087908f5019467436cE9E48670ba8c',
+  MutantsAddress: '0xAfBb1cB037DEd5E80FF21A89FDe45E675ebfC829',
+  SerumAddress: '0x0E5C9Efdd996260F87f9EF0713F2E0beA6C0F962',
   supportedChainIds: [4],
   validChainName: 'Rinkeby',
 };
